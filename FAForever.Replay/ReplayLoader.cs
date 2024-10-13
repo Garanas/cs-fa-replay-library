@@ -437,25 +437,25 @@ namespace FAForever.Replay
 
 
             byte numberOfClients = reader.ReadByte();
-            ReplaySource[] clients = new ReplaySource[numberOfClients];
+            ReplayClient[] clients = new ReplayClient[numberOfClients];
             for (int i = 0; i < numberOfClients; i++)
             {
-                clients[i] = new ReplaySource(PlayerName: reader.ReadNullTerminatedString(), PlayerId: reader.ReadInt32());
+                clients[i] = new ReplayClient(reader.ReadNullTerminatedString(), reader.ReadInt32());
             }
 
             Boolean cheatsEnabled = reader.ReadByte() > 0;
 
-            int numberOfPlayerOptions = reader.ReadByte();
-            for (int i = 0; i < numberOfPlayerOptions; i++)
+            int numberOfArmies = reader.ReadByte();
+            for (int i = 0; i < numberOfArmies; i++)
             {
-                int numberOfBytesPlayerOptions = reader.ReadInt32();
-                LuaData playerOptionsData = LuaDataLoader.ReadLuaData(reader);
+                int numberOfBytesArmyConfig = reader.ReadInt32();
+                LuaData armyConfigData = LuaDataLoader.ReadLuaData(reader);
                 //byte[] playerOptions = reader.ReadBytes(numberOfBytesPlayerOptions);
 
-                int playerSource = reader.ReadByte();
+                int Unknown4 = reader.ReadByte();
 
                 // ???
-                if (playerSource != 255)
+                if (Unknown4 != 255)
                 {
                     byte[] Unknown3 = reader.ReadBytes(1); // always -1
                 }

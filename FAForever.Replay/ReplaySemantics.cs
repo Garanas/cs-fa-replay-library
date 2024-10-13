@@ -32,7 +32,7 @@ namespace FAForever.Replay
                         }
 
                         // all players create a sim callback when one player sends a message. Requires refactoring in the game
-                        if (sender.Value != replay.Header.Clients[replayInput.SourceId].PlayerName)
+                        if (sender.Value != replay.Header.Clients[replayInput.SourceId].Name)
                         {
                             break;
                         }

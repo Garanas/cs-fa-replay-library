@@ -1,5 +1,5 @@
 ﻿
 namespace FAForever.Replay
 {
-    public record ReplayHeader(ReplayScenario Scenario, ReplaySource[] Clients, LuaData[] Mods, LuaData[] ArmyOptions);
+    public record ReplayHeader(ReplayScenario Scenario, ReplayClient[] Clients, LuaData[] Mods, LuaData[] ArmyOptions);
 }

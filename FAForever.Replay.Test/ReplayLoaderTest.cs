@@ -36,6 +36,7 @@ public class ReplayLoaderTest
     [DataRow("assets/faforever/23225440.fafreplay", 6630)]
     [DataRow("assets/faforever/23225685.fafreplay", 14178)]
     [DataRow("assets/faforever/23225104.fafreplay", 51017)]
+    [DataRow("assets/faforever/ai/23374795-zhanghm18.fafreplay", 567)]
     public void FAForeverUserInputCountTest(string file, int expectedCount)
     {
         Replay replay = ReplayLoader.LoadFAFReplayFromDisk(file);

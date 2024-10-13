@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="assets\faforever\ai\23374795-zhanghm18.fafreplay">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="assets\faforever\23225104.fafreplay">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
