@@ -4,6 +4,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Title>Replay parser for FAForever</Title>
+    <Authors>Willem Bart Wijnia</Authors>
+    <Description>Provides a library to parse replay files of the game Supreme Commander: Forged Alliance. Supports the compressed format that is used by FAForever.</Description>
+    <Copyright>Willem Bart Wijnia</Copyright>
+    <PackageProjectUrl>https://github.com/Garanas/cs-fa-replay-library</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Garanas/cs-fa-replay-library/blob/main/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Garanas/cs-fa-replay-library</RepositoryUrl>
+    <RepositoryType>Library</RepositoryType>
+    <PackageTags>Supreme Commander, Forged Alliance, FAForever, replaty</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
