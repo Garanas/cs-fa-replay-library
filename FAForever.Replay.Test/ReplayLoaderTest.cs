@@ -53,7 +53,11 @@ public class ReplayLoaderTest
     [DataRow("assets/scfa/balthazar-01.SCFAReplay", 6290)]
     [DataRow("assets/scfa/balthazar-02.SCFAReplay", 8377)]
     [DataRow("assets/scfa/balthazar-03.SCFAReplay", 12077)]
-    [DataRow("assets/scfa/23555859.SCFAReplay", 12795)]
+    [DataRow("assets/scfa/23555859.scfareplay", 12795)]
+    [DataRow("assets/scfa/22425616.scfareplay", 99)]
+    [DataRow("assets/scfa/22373098.scfareplay", 123)]
+    [DataRow("assets/scfa/22338092.scfareplay", 12)]
+    [DataRow("assets/scfa/21stGameOceanScampsV2.SCFAReplay", 7284)]
     public void SCFAUserInputCountTest(string file, int expectedCount)
     {
         Replay replay = ReplayLoader.LoadSCFAReplayFromDisk(file);
