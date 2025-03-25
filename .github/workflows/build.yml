@@ -1,0 +1,35 @@
+name: Build library
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [6.0.x, 7.0.x, 8.0.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-restore
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-build
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FAForever.Replay-${{ matrix.dotnet-version }}
+          path: FAForever.Replay/bin/release

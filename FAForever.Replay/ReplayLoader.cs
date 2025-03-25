@@ -494,7 +494,7 @@ namespace FAForever.Replay
 
             return JsonSerializer.Deserialize<ReplayMetadata>(json.ToString());
         }
-
+        
         private static MemoryStream? DecompressReplay(Stream stream, ReplayCompression compression)
         {
             MemoryStream replayStream = new MemoryStream();
