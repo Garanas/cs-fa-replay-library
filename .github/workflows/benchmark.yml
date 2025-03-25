@@ -1,0 +1,36 @@
+
+name: Benchmark library
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-restore
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-build
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+    # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-run
+    - name: Run benchmarks
+      working-directory: FAForever.Replay.Benchmark
+      run: dotnet run --configuration Release
+
+    - name: Upload results as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: BenchmarkDotNet-Artifacts
+        path: FAForever.Replay.Benchmark/BenchmarkDotNet.Artifacts
