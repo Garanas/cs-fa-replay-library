@@ -28,12 +28,18 @@ jobs:
         with:
           path: artifacts
 
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ inputs.version }}
-          name: "Release ${{ inputs.version }}"
-          draft: true
-          generateReleaseNotes: true
-          artifacts: "artifacts/*/*"
-          artifactErrorsFailBuild: true
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh
+        
+      - name: Authenticate GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Create Release
+        run: | 
+          gh release create ${{ inputs.version }} --title "Release ${{ inputs.version }}" --notes "Auto-generated release" --draft
+      
+      - name: Upload Artifacts
+        run: | 
+          ls -R artifacts
+          gh release upload ${{ inputs.version }} artifacts/**/* --clobber
+
