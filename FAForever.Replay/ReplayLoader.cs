@@ -514,7 +514,6 @@ namespace FAForever.Replay
         private static MemoryStream DecompressReplay(Stream stream, ReplayCompression compression)
         {
             MemoryStream replayStream = new MemoryStream();
-
             switch (compression)
             {
                 case ReplayCompression.Gzip:
@@ -697,59 +696,6 @@ namespace FAForever.Replay
             using (ReplayBinaryReader reader = new ReplayBinaryReader(stream))
             {
                 return LoadReplay(reader);
-            }
-        }
-
-        /// <summary>
-        /// Loads a replay from disk that is expected to be in the compressed format of FAForever.
-        /// 
-        /// Loads the replay from start to finish, if intermediate steps are required then please see the ProcessReplayStage methods.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static Replay LoadFAFReplayFromDisk(string path)
-        {
-            using (FileStream stream = new FileStream(path, FileMode.Open))
-            {
-                return LoadFAFReplayFromMemory(stream);
-            }
-        }
-
-        /// <summary>
-        /// Loads a replay from disk that is expected to be in the uncompressed format of Supreme Commander: Forged Alliance.
-        /// 
-        /// Loads the replay from start to finish, if intermediate steps are required then please see the ProcessReplayStage methods.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static Replay LoadSCFAReplayFromDisk(string path)
-        {
-            using (FileStream reader = new FileStream(path, FileMode.Open))
-            {
-                return LoadSCFAReplayFromStream(reader);
-            }
-        }
-
-        /// <summary>
-        /// Loads a replay from disk. Attempts to infer the replay type from the file extension.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        public static Replay LoadReplayFromDisk(string path)
-        {
-            string extension = Path.GetExtension(path);
-            switch (extension)
-            {
-                case ".fafreplay":
-                    return LoadFAFReplayFromDisk(path);
-
-                case ".scfareplay":
-                    return LoadSCFAReplayFromDisk(path);
-
-                default:
-                    throw new ArgumentException("Unknown replay extension. Expected '.fafreplay' or '.scfareplay'");
-
             }
         }
     }
