@@ -36,7 +36,7 @@ namespace FAForever.Replay.Benchmark
             byte[] replayData = AllReplays[ReplayFile];
             using (MemoryStream stream = new MemoryStream(replayData))
             {
-                ReplayLoader.LoadSCFAReplayFromStream(stream);
+                ReplayLoader.LoadScfaReplayFromMemory(stream);
             }
         }
     }
