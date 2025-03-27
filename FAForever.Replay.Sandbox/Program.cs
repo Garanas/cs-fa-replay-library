@@ -54,11 +54,11 @@ namespace FAForever.Replay.Sandbox
             {
                 if (isFAForeverReplay)
                 {
-                    return ReplayLoader.LoadFAFReplayFromMemory(replayStream);
+                    return ReplayLoader.LoadFafReplayFromMemory(replayStream);
                 }
                 else
                 {
-                    return ReplayLoader.LoadSCFAReplayFromStream(replayStream);
+                    return ReplayLoader.LoadScfaReplayFromMemory(replayStream);
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace FAForever.Replay.Sandbox
             byte[] content = await response.Content.ReadAsByteArrayAsync();
             using MemoryStream replayStream = new MemoryStream(content);
             {
-                return ReplayLoader.LoadFAFReplayFromMemory(replayStream);
+                return ReplayLoader.LoadFafReplayFromMemory(replayStream);
             }
         }
 

@@ -466,6 +466,11 @@ namespace FAForever.Replay
             return new ReplayHeader(scenario, clients, mods.ToArray(), new LuaData[] { });
         }
 
+        /// <summary>
+        /// Loads a replay.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         private static Replay LoadReplay(ReplayBinaryReader reader)
         {
             ReplayHeader replayHeader = LoadReplayHeader(reader);
@@ -477,6 +482,11 @@ namespace FAForever.Replay
             );
         }
 
+        /// <summary>
+        /// Loads the meta data of a replay that originates from FAForever.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         private static ReplayMetadata? LoadReplayMetadata(ReplayBinaryReader reader)
         {
             StringBuilder json = new StringBuilder();
@@ -495,10 +505,15 @@ namespace FAForever.Replay
             return JsonSerializer.Deserialize<ReplayMetadata>(json.ToString());
         }
         
-        private static MemoryStream? DecompressReplay(Stream stream, ReplayCompression compression)
+        /// <summary>
+        /// Decompresses the stream.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="compression"></param>
+        /// <returns></returns>
+        private static MemoryStream DecompressReplay(Stream stream, ReplayCompression compression)
         {
             MemoryStream replayStream = new MemoryStream();
-
             switch (compression)
             {
                 case ReplayCompression.Gzip:
@@ -526,7 +541,7 @@ namespace FAForever.Replay
                     }
 
                 default:
-                    return null;
+                    throw new ArgumentException("Unknown replay compression");
             }
         }
 
@@ -598,6 +613,7 @@ namespace FAForever.Replay
         /// This allows the process to exit periodically, make room for other code to run, and then continue where it left off. This is useful for single threaded environments such as WebAssembly that is used by Blazor.
         /// </summary>
         /// <param name="stage"></param>
+        /// <param name="batchSize"></param>
         /// <returns></returns>
         public static ReplayLoadingStage ProcessReplayStage(ReplayLoadingStage.WithScenario stage, int batchSize = 1000)
         {
@@ -611,6 +627,7 @@ namespace FAForever.Replay
         /// This allows the process to exit periodically, make room for other code to run, and then continue where it left off. This is useful for single threaded environments such as WebAssembly that is used by Blazor.
         /// </summary>
         /// <param name="stage"></param>
+        /// <param name="batchSize"></param>
         /// <returns></returns>
         public static ReplayLoadingStage ProcessReplayStage(ReplayLoadingStage.AtInput stage, int batchSize = 1000)
         {
@@ -625,98 +642,60 @@ namespace FAForever.Replay
             }
         }
 
-
         /// <summary>
-        /// Loads a FAForever replay from memory. 
+        /// Loads a replay from a stream.
+        ///
+        /// Loads the replay from start to finish, if intermediate steps are required then please see the ProcessReplayStage methods.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Replay? LoadReplayFromStream(Stream stream, ReplayType type)
+        {
+            return type switch
+            {
+                ReplayType.Steam => LoadScfaReplayFromMemory(stream),
+                ReplayType.ForgedAllianceForever => LoadFafReplayFromMemory(stream),
+                _ => null
+            };
+        }
+        
+        /// <summary>
+        /// Loads a FAForever replay from a stream. 
         /// 
         /// Loads the replay from start to finish, if intermediate steps are required then please see the ProcessReplayStage methods.
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        public static Replay LoadFAFReplayFromMemory(Stream stream)
+        public static Replay LoadFafReplayFromMemory(Stream stream)
         {
             ReplayBinaryReader reader = new ReplayBinaryReader(stream);
             ReplayMetadata replayMetadata = LoadReplayMetadata(reader);
 
 
             ReplayCompression replayCompression = ReplayCompression.Gzip;
-            if (replayMetadata.compression == "zstd")
+            if (replayMetadata is { compression: "zstd" })
             {
                 replayCompression = ReplayCompression.Zstd;
             }
 
             MemoryStream decompressedStream = DecompressReplay(stream, replayCompression);
-            using (ReplayBinaryReader replayBinaryReader = new ReplayBinaryReader(decompressedStream))
-            {
-                return LoadReplay(replayBinaryReader);
-            }
+            using ReplayBinaryReader replayBinaryReader = new ReplayBinaryReader(decompressedStream);
+            return LoadReplay(replayBinaryReader);
         }
 
         /// <summary>
-        /// Loads a SCFA replay from memory.
+        /// Loads a SCFA replay from a stream.
         /// 
         /// Loads the replay from start to finish, if intermediate steps are required then please see the ProcessReplayStage methods.
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        public static Replay LoadSCFAReplayFromStream(Stream stream)
+        public static Replay LoadScfaReplayFromMemory(Stream stream)
         {
             using (ReplayBinaryReader reader = new ReplayBinaryReader(stream))
             {
                 return LoadReplay(reader);
-            }
-        }
-
-        /// <summary>
-        /// Loads a replay from disk that is expected to be in the compressed format of FAForever.
-        /// 
-        /// Loads the replay from start to finish, if intermediate steps are required then please see the ProcessReplayStage methods.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static Replay LoadFAFReplayFromDisk(string path)
-        {
-            using (FileStream stream = new FileStream(path, FileMode.Open))
-            {
-                return LoadFAFReplayFromMemory(stream);
-            }
-        }
-
-        /// <summary>
-        /// Loads a replay from disk that is expected to be in the uncompressed format of Supreme Commander: Forged Alliance.
-        /// 
-        /// Loads the replay from start to finish, if intermediate steps are required then please see the ProcessReplayStage methods.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static Replay LoadSCFAReplayFromDisk(string path)
-        {
-            using (FileStream reader = new FileStream(path, FileMode.Open))
-            {
-                return LoadSCFAReplayFromStream(reader);
-            }
-        }
-
-        /// <summary>
-        /// Loads a replay from disk. Attempts to infer the replay type from the file extension.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        public static Replay LoadReplayFromDisk(string path)
-        {
-            string extension = Path.GetExtension(path);
-            switch (extension)
-            {
-                case ".fafreplay":
-                    return LoadFAFReplayFromDisk(path);
-
-                case ".scfareplay":
-                    return LoadSCFAReplayFromDisk(path);
-
-                default:
-                    throw new ArgumentException("Unknown replay extension. Expected '.fafreplay' or '.scfareplay'");
-
             }
         }
     }

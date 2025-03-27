@@ -10,8 +10,11 @@ public class ReplayLoaderTest
     [DataRow("assets/faforever/zstd/22425616.fafreplay")]
     public void FAForeverZSTDTest(string file)
     {
-        Replay replay = ReplayLoader.LoadFAFReplayFromDisk(file);
-        Assert.IsNotNull(replay);
+        using (FileStream stream = new FileStream(file, FileMode.Open))
+        {
+            Replay replay = ReplayLoader.LoadFafReplayFromMemory(stream);
+            Assert.IsNotNull(replay);
+        }
     }
 
     [TestMethod]
@@ -21,8 +24,11 @@ public class ReplayLoaderTest
     [DataRow("assets/faforever/gzip/22453511.fafreplay")]
     public void FAForeverGZipTest(string file)
     {
-        Replay replay = ReplayLoader.LoadFAFReplayFromDisk(file);
-        Assert.IsNotNull(replay);
+        using (FileStream stream = new FileStream(file, FileMode.Open))
+        {
+            Replay replay = ReplayLoader.LoadFafReplayFromMemory(stream);
+            Assert.IsNotNull(replay);
+        }
     }
 
     [TestMethod]
@@ -44,8 +50,11 @@ public class ReplayLoaderTest
     [DataRow("assets/faforever/ai/23374795-zhanghm18.fafreplay", 567)]
     public void FAForeverUserInputCountTest(string file, int expectedCount)
     {
-        Replay replay = ReplayLoader.LoadFAFReplayFromDisk(file);
-        Assert.AreEqual(expectedCount, replay.Body.UserInput.Count);
+        using (FileStream stream = new FileStream(file, FileMode.Open))
+        {
+            Replay replay = ReplayLoader.LoadFafReplayFromMemory(stream);
+            Assert.AreEqual(expectedCount, replay.Body.UserInput.Count);
+        }
     }
 
     [TestMethod]
@@ -60,8 +69,11 @@ public class ReplayLoaderTest
     [DataRow("assets/scfa/21stGameOceanScampsV2.SCFAReplay", 7284)]
     public void SCFAUserInputCountTest(string file, int expectedCount)
     {
-        Replay replay = ReplayLoader.LoadSCFAReplayFromDisk(file);
-        Assert.AreEqual(expectedCount, replay.Body.UserInput.Count);
+        using (FileStream stream = new FileStream(file, FileMode.Open))
+        {
+            Replay replay = ReplayLoader.LoadScfaReplayFromMemory(stream);
+            Assert.AreEqual(expectedCount, replay.Body.UserInput.Count);
+        }
     }
 
     [TestMethod]
@@ -71,8 +83,11 @@ public class ReplayLoaderTest
     [DataRow("assets/faforever/gzip/22453511.fafreplay", 3)]
     public void FAForeverChatMessageCountTest(string file, int expectedCount)
     {
-        Replay replay = ReplayLoader.LoadFAFReplayFromDisk(file);
-        List<ReplayChatMessage> chatMessages = ReplaySemantics.GetChatMessages(replay);
-        Assert.AreEqual(expectedCount, chatMessages.Count);
+        using (FileStream stream = new FileStream(file, FileMode.Open))
+        {
+            Replay replay = ReplayLoader.LoadFafReplayFromMemory(stream);
+            List<ReplayChatMessage> chatMessages = ReplaySemantics.GetChatMessages(replay);
+            Assert.AreEqual(expectedCount, chatMessages.Count);
+        }
     }
 }
